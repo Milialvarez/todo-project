@@ -17,7 +17,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
 
-    tasks = relationship("Task", back_populates="owner")
+    tasks = relationship("Task", back_populates="user")
 
 
 class StatusEnum(str, enum.Enum):
@@ -37,3 +37,6 @@ class Task(Base):
         default=StatusEnum.pending,
         nullable=False
     )
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="tasks")

@@ -1,12 +1,6 @@
 from fastapi import FastAPI
-from app.db.session import engine
-from app.db import base
+from app.api.v1.endpoints import tasks
 
 app = FastAPI()
 
-# Crea las tablas automáticamente (solo mientras desarrollás)
-base.Base.metadata.create_all(bind=engine)
-
-@app.get("/")
-def root():
-    return {"message": "API funcionando"}
+app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
