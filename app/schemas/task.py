@@ -8,6 +8,11 @@ class TaskCreate(BaseModel):
     status: StatusEnum = StatusEnum.pending
     user_id: int
 
+class TaskUpdate(BaseModel):
+    task_id: int
+    title: str | None = None
+    description: str | None = None
+    status: StatusEnum | None = None
 
 class TaskRead(BaseModel):
     id: int
