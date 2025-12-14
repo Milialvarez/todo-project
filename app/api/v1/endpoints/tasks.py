@@ -69,3 +69,21 @@ def get_my_tasks(db: Session = Depends(get_db),
                  current_user: models.User = Depends(get_current_user)):
     tasks = db.query(models.Task).filter(models.Task.user_id == current_user.id).all()
     return tasks
+
+@router.get("/status/{status}", response_model=List[TaskRead])
+def get_tasks_by_status(
+    status: models.StatusEnum,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    tasks = (
+        db.query(models.Task)
+        .filter(
+            models.Task.status == status,
+            models.Task.user_id == current_user.id
+        )
+        .all()
+    )
+    return tasks
+
+
