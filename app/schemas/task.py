@@ -6,7 +6,6 @@ class TaskCreate(BaseModel):
     title: str
     description: str | None = None
     status: StatusEnum = StatusEnum.pending
-    user_id: int
 
 class TaskUpdate(BaseModel):
     task_id: int
