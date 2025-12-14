@@ -1,5 +1,5 @@
 from app.db.session import SessionLocal
-from app.db.models import User, Task, StatusEnum
+from app.db.models.models import User, Task, StatusEnum
 from app.core.security import get_password_hash 
 
 #ejecuto con python -m app.db.seed

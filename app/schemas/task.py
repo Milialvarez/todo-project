@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.db.models import StatusEnum
+from app.db.models.models import StatusEnum
 
 class TaskCreate(BaseModel):
     title: str

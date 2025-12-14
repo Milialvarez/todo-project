@@ -4,8 +4,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base_class import Base
 
-
-
 # use sqlalchemy as orm to create my tables automatically
 
 class User(Base):
@@ -40,3 +38,10 @@ class Task(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="tasks")
+
+class RevokedToken(Base):
+    __tablename__ = "revoked_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String, unique=True, index=True, nullable=False)
+    revoked_at = Column(DateTime, default=datetime.utcnow)

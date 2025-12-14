@@ -1,9 +1,14 @@
 from fastapi import FastAPI
+from sqlalchemy import Engine
 from app.api.v1.endpoints import auth, tasks, users
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.db.session import engine
+from app.db.base_class import Base  
+from app.db import models           
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,

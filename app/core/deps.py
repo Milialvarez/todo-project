@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.core.jwt import decode_access_token
 from app.db.session import get_db
-from app.db import models
+from app.db.models import models
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -25,3 +25,18 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
     return user
+
+def get_current_token(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+):
+    if db.query(models.RevokedToken).filter(
+        models.RevokedToken.token == token
+    ).first():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token revoked"
+        )
+
+    decode_access_token(token)
+    return token
