@@ -29,11 +29,3 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Uvicorn
  - pgAdmin
 
-
-📚 Aprendizajes clave
-
-Arquitectura modular en FastAPI
-
-Manejo correcto de JWT y seguridad
-
-Separación de responsabilidades
