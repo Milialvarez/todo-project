@@ -1,3 +1,4 @@
+ # security test that verifies logged user to acceed to the post functionality
 def test_create_task_requires_auth(client):
     response = client.post(
         "/tasks/",
@@ -15,7 +16,7 @@ def test_create_task_success_with_auth(authorized_client):
     assert response.status_code == 201
 
 
-
+# helper for log out test
 def get_auth_headers(client):
     client.post(
         "/users/register",

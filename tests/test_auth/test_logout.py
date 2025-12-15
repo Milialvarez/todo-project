@@ -13,4 +13,4 @@ def test_logout_revokes_token(client):
         json={"title": "Fail"},
     )
 
-    assert response.status_code == 401
+    assert response.status_code == 401 # proves that the token was succesfully revoked
