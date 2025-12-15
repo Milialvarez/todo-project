@@ -32,7 +32,12 @@ def override_get_db():
     finally:
         db.close()
 
-app.dependency_overrides[get_db] = override_get_db
+@pytest.fixture(scope="session", autouse=True)
+def override_db_dependency():
+    app.dependency_overrides[get_db] = override_get_db
+    yield
+    app.dependency_overrides.pop(get_db, None)
+
 
 # automatically teardown of the tests db for each test
 @pytest.fixture(scope="session", autouse=True)
