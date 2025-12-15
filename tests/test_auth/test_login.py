@@ -1,6 +1,6 @@
 def test_login_success(client):
     client.post(
-        "/auth/register",
+        "/users/register",
         json={
             "username": "testuser",
             "email": "test@test.com",
@@ -26,7 +26,7 @@ def test_login_success(client):
 
 def test_access_protected_endpoint(client):
     client.post(
-        "/auth/register",
+        "/users/register",
         json={
             "username": "testuser",
             "email": "test@test.com",
@@ -61,7 +61,7 @@ def test_access_protected_endpoint(client):
 
 def test_login_wrong_password(client):
     client.post(
-        "/auth/register",
+        "/users/register",
         json={
             "username": "testuser",
             "email": "test@test.com",

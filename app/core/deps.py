@@ -13,7 +13,7 @@ def get_current_user(
 ):
     
     if db.query(models.RevokedToken).filter(
-        models.RevokedToken.token == token
+        models.RevokedToken.token == token # check the sent token is still allowed
     ).first():
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
