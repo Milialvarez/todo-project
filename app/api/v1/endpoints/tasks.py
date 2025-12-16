@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import case
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.db.models import models
@@ -67,23 +68,28 @@ def delete_task(task_id: int, db: Session = Depends(get_db),
 @router.get("/me", response_model=List[TaskRead])
 def get_my_tasks(db: Session = Depends(get_db),
                  current_user: models.User = Depends(get_current_user)):
-    tasks = db.query(models.Task).filter(models.Task.user_id == current_user.id).all()
-    return tasks
-
-@router.get("/status/{status}", response_model=List[TaskRead])
-def get_tasks_by_status(
-    status: models.StatusEnum,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
     tasks = (
         db.query(models.Task)
-        .filter(
-            models.Task.status == status,
-            models.Task.user_id == current_user.id
+        .filter(models.Task.user_id == current_user.id)
+        .order_by(
+            case(
+                [
+                    (models.Task.status == "pending", 1),
+                    (models.Task.status == "in_progress", 2),
+                    (models.Task.status == "completed", 3)
+                ],
+                else_=4
+            ).asc()  
         )
         .all()
     )
     return tasks
 
-
+@router.get("/status/{status}", response_model=List[TaskRead]) 
+def get_tasks_by_status( status: models.StatusEnum, 
+                        db: Session = Depends(get_db), 
+                        current_user: models.User = Depends(get_current_user) ): 
+    tasks = (db.query(models.Task)
+             .filter( models.Task.status == status, models.Task.user_id == current_user.id )
+             .all())
+    return tasks
