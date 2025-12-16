@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import case
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.db.models import models
@@ -62,14 +61,15 @@ def delete_reminder(reminder_id: int, db: Session = Depends(get_db),
 
 
 @router.get("/me", response_model=List[ReminderRead])
-def get_my_reminders(db: Session = Depends(get_db),
-                 current_user: models.User = Depends(get_current_user)):
+def get_my_reminders(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     rems = (
         db.query(models.Reminder)
         .filter(models.Reminder.user_id == current_user.id)
-        .order_by(
-            models.Reminder.date
-        )
+        .order_by(models.Reminder.date)
         .all()
     )
     return rems
+

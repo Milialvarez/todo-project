@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import auth, tasks, users
+from app.api.v1.endpoints import auth, reminders, tasks, users
 from fastapi.middleware.cors import CORSMiddleware      
 
 app = FastAPI()
@@ -17,3 +17,4 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
+app.include_router(reminders.router, prefix="/reminders", tags=["Reminders"])

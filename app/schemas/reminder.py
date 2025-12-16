@@ -1,20 +1,19 @@
 from pydantic import BaseModel
-from sqlalchemy import Date
-
-from app.db.models.models import StatusEnum
+from datetime import date
 
 class ReminderCreate(BaseModel):
-    date: Date
-    description: str | None = None
+    date: date
+    description: str 
 
 class ReminderUpdate(BaseModel):
     reminder_id: int
+    date: date
     description: str | None = None
-    date: Date
 
 class ReminderRead(BaseModel):
     id: int
+    date: date
     description: str | None = None
-    date: Date
+
     class Config:
-        orm_mode = True
+        from_attributes = True  

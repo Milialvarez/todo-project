@@ -73,11 +73,9 @@ def get_my_tasks(db: Session = Depends(get_db),
         .filter(models.Task.user_id == current_user.id)
         .order_by(
             case(
-                [
                     (models.Task.status == "pending", 1),
                     (models.Task.status == "in_progress", 2),
-                    (models.Task.status == "completed", 3)
-                ],
+                    (models.Task.status == "completed", 3),
                 else_=4
             ).asc()  
         )
