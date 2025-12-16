@@ -1,5 +1,5 @@
-from .session import engine
-from .models.models import Base
+from app.db.session import engine
+from app.db.models.models import Base
 
 #script to test conection and create tables
 def init():

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Enum
+from sqlalchemy import Column, Date, Integer, String, Boolean, ForeignKey, DateTime, Enum
 import enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -16,6 +16,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     tasks = relationship("Task", back_populates="user")
+    reminders = relationship("Reminder",back_populates="user")
 
 
 class StatusEnum(str, enum.Enum):
@@ -35,7 +36,6 @@ class Task(Base):
         default=StatusEnum.pending,
         nullable=False
     )
-
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="tasks")
 
@@ -45,3 +45,12 @@ class RevokedToken(Base):
     id = Column(Integer, primary_key=True, index=True)
     token = Column(String, unique=True, index=True, nullable=False)
     revoked_at = Column(DateTime, default=datetime.utcnow)
+
+class Reminder(Base):
+    __tablename__ = "reminders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False)
+    description = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="reminders")
