@@ -8,6 +8,7 @@ from app.schemas.reminder import ReminderCreate, ReminderRead, ReminderUpdate
 
 router = APIRouter()
 
+# already working well
 @router.post("/", response_model=ReminderRead, status_code=status.HTTP_201_CREATED)
 def create_reminder(reminder: ReminderCreate, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
@@ -22,21 +23,20 @@ def create_reminder(reminder: ReminderCreate, db: Session = Depends(get_db),
     db.refresh(new_reminder)
     return new_reminder
 
+# already working well
 @router.put("/", response_model=ReminderRead)
 def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
     reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == reminder.reminder_id).first()
     if not reminder_from_db:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail="reminder not found")
 
     if reminder_from_db.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to update this task")
+        raise HTTPException(status_code=403, detail="Not authorized to update this reminder")
 
     if reminder.description is None and reminder.date is None:
         raise HTTPException(status_code=400, detail="At least one field must be provided")
 
-    if reminder_from_db.description is not None:
-        reminder_from_db.title = reminder.title
     if reminder_from_db.description is not None:
         reminder_from_db.description = reminder.description
 
@@ -46,9 +46,9 @@ def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
 
 
 @router.delete("/{rem_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_reminder(reminder_id: int, db: Session = Depends(get_db),
+def delete_reminder(rem_id: int, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
-    reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == reminder_id).first()
+    reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == rem_id).first()
     if not reminder_from_db:
         raise HTTPException(status_code=404, detail="Reminder not found")
 
@@ -59,7 +59,7 @@ def delete_reminder(reminder_id: int, db: Session = Depends(get_db),
     db.commit()
     return None
 
-
+# already working well
 @router.get("/me", response_model=List[ReminderRead])
 def get_my_reminders(
     db: Session = Depends(get_db),
