@@ -7,9 +7,6 @@ from app.db.models.models import Base
 
 app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
-
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
