@@ -2,7 +2,7 @@
 
 ## Backend de una aplicación de gestión de tareas desarrollado con FastAPI, enfocado en autenticación con JWT y operaciones CRUD protegidas por usuario.
 
-El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arquitectura backend moderna.
+El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arquitectura backend moderna, incorporando buenas prácticas como testing automatizado, contenedorización con Docker y validación continua mediante CI.
 
 ---
 
@@ -30,4 +30,15 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Uvicorn
  - pgAdmin
  - Pytest
+ - Docker & Docker Compose
+ - GitHub Actions (CI)
 
+---
+
+### Testing y CI
+
+El proyecto cuenta con tests unitarios implementados con Pytest, enfocados principalmente en autenticación y operaciones sobre tareas. Además, se incorporó Integración Continua (CI) mediante GitHub Actions, que ejecuta automáticamente en cada push o pull request:
+- Instalación del proyecto en un entorno limpio
+- Levantamiento de una base de datos PostgreSQL en contenedor
+- Inicialización del esquema de la base de datos
+- Ejecución completa de la suite de tests
