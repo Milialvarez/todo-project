@@ -10,5 +10,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python -m app.db.init_db && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
-
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# for future tests, manually i must execute the init_db file to create my schemas in the container
