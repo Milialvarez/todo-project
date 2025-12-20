@@ -16,7 +16,7 @@ services:
     container_name: postgres_db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: administracionlideresmagno
       POSTGRES_DB: tasksmanager
     volumes:
       - postgres_data:/var/lib/postgresql/data
