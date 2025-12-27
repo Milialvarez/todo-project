@@ -1,3 +1,4 @@
+import uuid
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -53,10 +54,36 @@ def client():
     return TestClient(app)
 
 # mock used to fake a logged user
-@pytest.fixture 
-def authorized_client(): 
-    def override_get_current_user(): return User( id=1, email="test@test.com", is_active=True, ) 
-    app.dependency_overrides[get_current_user] = override_get_current_user 
-    client = TestClient(app) 
-    yield client 
-    app.dependency_overrides.clear()
+@pytest.fixture
+def authorized_client(client, test_user):
+    def override_get_current_user():
+        return test_user
+
+    app.dependency_overrides[get_current_user] = override_get_current_user
+    yield client
+    app.dependency_overrides.pop(get_current_user, None)
+
+
+
+@pytest.fixture
+def test_user(db):
+    user = User(
+        username=f"user_{uuid.uuid4()}",
+        email=f"{uuid.uuid4()}@test.com",
+        hashed_password="hashed",
+        is_active=True,
+    )
+    db.add(user)
+    db.commit()
+    return user
+
+
+@pytest.fixture
+def db():
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
+

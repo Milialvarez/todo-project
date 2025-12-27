@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from app.api.v1.endpoints import auth, reminders, tasks, users
 from fastapi.middleware.cors import CORSMiddleware      
-from app.db.session import engine
-from app.db.models.models import Base
 
 
 app = FastAPI()

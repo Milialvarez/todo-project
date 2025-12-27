@@ -15,6 +15,35 @@ def test_create_task_success_with_auth(authorized_client):
 
     assert response.status_code == 201
 
+def test_update_task(authorized_client):
+    # first create a new task
+    response = authorized_client.post(
+        "/tasks/",
+        json={"title": "Nueva tarea"},
+    )
+
+    assert response.status_code == 201
+    task_data = response.json()
+    task_id = task_data["id"]
+
+    response_updated = authorized_client.put(
+        f"/tasks/",
+        json={
+            "task_id": task_id,
+            "title": "Tarea actualizada",
+            "description": "descripcion de la tareita",
+            "status": "in_progress",
+        },
+    )
+
+    assert response_updated.status_code == 200
+
+    updated_data = response_updated.json()
+
+    assert updated_data["id"] == task_id
+    assert updated_data["title"] == "Tarea actualizada"
+    assert updated_data["status"] == "in_progress"
+
 
 # helper for log out test
 def get_auth_headers(client):
