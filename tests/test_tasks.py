@@ -68,9 +68,6 @@ def test_delete_task_unexistent(authorized_client):
 
     assert response.status_code == 404
 
-
-
-
 # helper for log out test
 def get_auth_headers(client):
     client.post(

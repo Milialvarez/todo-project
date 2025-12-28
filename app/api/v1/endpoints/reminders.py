@@ -37,12 +37,23 @@ def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
     if reminder.description is None and reminder.date is None:
         raise HTTPException(status_code=400, detail="At least one field must be provided")
 
-    if reminder_from_db.description is not None:
+    if reminder.description is not None:
         reminder_from_db.description = reminder.description
+
+    if reminder.date is not None:
+        reminder_from_db.date = reminder.date
 
     db.commit()
     db.refresh(reminder_from_db)
-    return reminder_from_db
+    
+    response = ReminderRead(
+        id=reminder_from_db.id,
+        date=reminder_from_db.date,
+        description=reminder_from_db.description
+    )
+
+    print(response.date, response.description)
+    return response
 
 
 @router.delete("/{rem_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 from datetime import date
 
@@ -7,13 +8,13 @@ class ReminderCreate(BaseModel):
 
 class ReminderUpdate(BaseModel):
     reminder_id: int
-    date: date
-    description: str | None = None
+    date: Optional[date] | None
+    description: Optional[str] = None
 
 class ReminderRead(BaseModel):
     id: int
-    date: date
-    description: str | None = None
+    date: date | None
+    description: str
 
     class Config:
-        from_attributes = True  
+        from_attributes = True
