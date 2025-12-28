@@ -44,6 +44,32 @@ def test_update_task(authorized_client):
     assert updated_data["title"] == "Tarea actualizada"
     assert updated_data["status"] == "in_progress"
 
+def test_delete_task(authorized_client):
+    response = authorized_client.post(
+        "/tasks/",
+        json={"title": "Nueva tarea"},
+    )
+
+    assert response.status_code == 201
+    task_data = response.json()
+    task_id = task_data["id"]
+
+    deleted = authorized_client.delete(
+        f"/tasks/{task_id}",
+    )
+
+    assert deleted.status_code == 204
+
+
+def test_delete_task_unexistent(authorized_client):
+    task_id = 1234
+
+    response = authorized_client.delete(f"/tasks/{task_id}")
+
+    assert response.status_code == 404
+
+
+
 
 # helper for log out test
 def get_auth_headers(client):
