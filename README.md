@@ -16,7 +16,8 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Protección de rutas con dependencias (Depends)
  - Validación de datos con Pydantic
  - ORM con SQLAlchemy
- - Unit Testing de auth y módulo de tasks 
+ - Unit Testing de auth y módulo de tasks
+ - Envío automático a las 9am de cada día a usuarios que tengan recordatorios para el día siguiente
 
 ---
 
@@ -32,6 +33,7 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Pytest
  - Docker & Docker Compose
  - GitHub Actions (CI)
+ - SMTP
 
 ---
 
