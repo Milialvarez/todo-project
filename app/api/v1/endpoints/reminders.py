@@ -52,7 +52,6 @@ def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
         description=reminder_from_db.description
     )
 
-    print(response.date, response.description)
     return response
 
 

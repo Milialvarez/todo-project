@@ -15,8 +15,17 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
 
-    tasks = relationship("Task", back_populates="user")
-    reminders = relationship("Reminder",back_populates="user")
+    tasks = relationship(
+    "Task",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
+    reminders = relationship(
+    "Reminder",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
+
 
 
 class StatusEnum(str, enum.Enum):
@@ -36,7 +45,11 @@ class Task(Base):
         default=StatusEnum.pending,
         nullable=False
     )
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(
+    Integer,
+    ForeignKey("users.id", ondelete="CASCADE"),
+    nullable=False
+    )
     user = relationship("User", back_populates="tasks")
 
 class RevokedToken(Base):
@@ -52,5 +65,9 @@ class Reminder(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(
+    Integer,
+    ForeignKey("users.id", ondelete="CASCADE"),
+    nullable=False
+    )
     user = relationship("User", back_populates="reminders")

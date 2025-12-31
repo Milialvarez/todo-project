@@ -5,6 +5,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "change-me-to-a-random-secret"  
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 
+    EMAIL_FROM: str
+    EMAIL_PASSWORD: str
+    EMAIL_HOST: str = "smtp.gmail.com"
+    EMAIL_PORT: int = 465
+
 
     class Config:
         env_file = ".env"
