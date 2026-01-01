@@ -12,6 +12,16 @@ router = APIRouter()
 @router.post("/", response_model=ReminderRead, status_code=status.HTTP_201_CREATED)
 def create_reminder(reminder: ReminderCreate, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
+    """
+    Endpoint to create a new reminder
+    
+    :param reminder: reminder create object with the needed attributes to create the new reminder
+    :type reminder: ReminderCreate
+    :param db: session that availables system to verify wich db is beign used
+    :type db: Session
+    :param current_user: data of the logued user who called the operation
+    :type current_user: models.User
+    """
     new_reminder = models.Reminder(
         description=reminder.description,
         date=reminder.date,       
@@ -27,6 +37,16 @@ def create_reminder(reminder: ReminderCreate, db: Session = Depends(get_db),
 @router.put("/", response_model=ReminderRead)
 def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
+    """
+    Endpoint to update an existent reminder
+    
+    :param reminder: reminderupdate object with the needed data to update the entity
+    :type reminder: ReminderUpdate
+    :param db: session that availables system to verify wich db is beign used
+    :type db: Session
+    :param current_user: data of the logued user who called the operation
+    :type current_user: models.User
+    """
     reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == reminder.reminder_id).first()
     if not reminder_from_db:
         raise HTTPException(status_code=404, detail="reminder not found")
@@ -58,6 +78,16 @@ def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
 @router.delete("/{rem_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_reminder(rem_id: int, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
+    """
+    Endpoint to delete an existent reminder
+    
+    :param rem_id: ID to find the specified reminder
+    :type rem_id: int
+    :param db: session that availables system to verify wich db is beign used
+    :type db: Session
+    :param current_user: data of the logued user who called the operation
+    :type current_user: models.User
+    """
     reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == rem_id).first()
     if not reminder_from_db:
         raise HTTPException(status_code=404, detail="Reminder not found")
@@ -75,6 +105,14 @@ def get_my_reminders(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    """
+    Endpoint to get all the reminders of a user
+    
+    :param db: session that availables system to verify wich db is beign used
+    :type db: Session
+    :param current_user: data of the logued user who called the operation
+    :type current_user: models.User
+    """
     rems = (
         db.query(models.Reminder)
         .filter(models.Reminder.user_id == current_user.id)
