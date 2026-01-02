@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator
-from datetime import date, datetime
+import datetime
+
 
 class ReminderCreate(BaseModel):
     date: datetime.date = Field(
@@ -48,7 +49,7 @@ class ReminderUpdate(BaseModel):
     @field_validator("date")
     @classmethod
     def date_cannot_be_in_the_past(cls, value: Optional[datetime.date]):
-        if value and value < date.today():
+        if value and value < datetime.date.today():
             raise ValueError("the reminder date cannot have passed")
         return value
 
@@ -59,8 +60,8 @@ class ReminderRead(BaseModel):
         example=1
     )
 
-    date: Optional[datetime.date] = Field(
-        None,
+    date: datetime.date = Field(
+        ...,
         example="2026-01-15"
     )
 
@@ -71,4 +72,3 @@ class ReminderRead(BaseModel):
 
     class Config:
         from_attributes = True
-

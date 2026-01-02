@@ -1,7 +1,7 @@
 def test_create_reminder_requires_auth(client):
     response = client.post(
         "/reminders/",
-        json={"date": "2025-12-31",
+        json={"date": "2026-12-31",
               "description": "happy new year's eve!!"},
     )
 
@@ -10,7 +10,7 @@ def test_create_reminder_requires_auth(client):
 def test_create_reminder_success(authorized_client):
     response = authorized_client.post(
         "/reminders/",
-        json={"date": "2025-12-31",
+        json={"date": "2026-12-31",
               "description": "happy new year's eve!!"},
     )
 
@@ -21,7 +21,7 @@ def test_create_reminder_success(authorized_client):
 def test_delete_reminder(authorized_client):
     response = authorized_client.post(
         "/reminders/",
-        json={"date": "2025-12-31",
+        json={"date": "2026-12-31",
               "description": "happy new year's eve!!"},
     )
 
@@ -37,7 +37,7 @@ def test_delete_reminder(authorized_client):
 def test_update_reminder(authorized_client):
     response = authorized_client.post(
         "/reminders/",
-        json={"date": "2025-12-31",
+        json={"date": "2026-12-31",
               "description": "happy new year's eve!!"},
     )
 
@@ -48,7 +48,7 @@ def test_update_reminder(authorized_client):
         f"/reminders/",
         json={
             "reminder_id": reminder_id,
-            "date": "2026-01-01",
+            "date": "2027-01-01",
             "description": "officially happy new year!!",
         },
     )
@@ -57,12 +57,12 @@ def test_update_reminder(authorized_client):
 
     data = response_updated.json()
     assert data["description"] == "officially happy new year!!"
-    assert data["date"] =="2026-01-01"
+    assert data["date"] =="2027-01-01"
 
 def test_update_empty_reminder(authorized_client):
     response = authorized_client.post(
         "/reminders/",
-        json={"date": "2025-12-31",
+        json={"date": "2026-12-31",
               "description": "happy new year's eve!!"},
     )
 
