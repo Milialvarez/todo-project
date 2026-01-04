@@ -11,14 +11,14 @@ class UserCreate(BaseModel):
         ...,
         description="user password, also used to log in the app",
         min_length=6,
-        example="123456"
+        example="Password1"
     )
 
     @field_validator("password")
     @classmethod
-    def password_min_lenght(cls, value:str):
-        if value.__len__ < 6:
-            raise ValueError("The password should have at least 6 characters")
+    def password_must_contain_number(cls, value: str):
+        if not any(char.isdigit() for char in value):
+            raise ValueError("Password must contain at least one number")
         return value
 
 class UserRead(BaseModel):
