@@ -1,24 +1,34 @@
 from app.db.session import SessionLocal
-from app.db.models.models import User, Task, StatusEnum
-from app.core.security import get_password_hash 
+from app.db.models.models import User, Task, StatusEnum, UserRole
+from app.core.security import get_password_hash
 
 #ejecuto con python -m app.db.seed
 
 def seed_data():
     db = SessionLocal()
-
     try:
-        # Crear un user
+        print("Iniciando seed...")
+
         user = User(
             username="mili",
             email="mili@test.com",
-            hashed_password=get_password_hash("123456")
+            hashed_password=get_password_hash("123456"),
+            role=UserRole.user
         )
         db.add(user)
         db.commit()
         db.refresh(user)
 
-        # Crear tasks de prueba
+        admin = User(
+            username="admin",
+            email="admin@gmail.com",
+            hashed_password=get_password_hash("admin123"),
+            role=UserRole.admin
+        )
+        db.add(admin)
+        db.commit()
+        db.refresh(admin)
+
         task1 = Task(
             title="Comprar alimentos",
             description="Ir al súper",
@@ -36,7 +46,7 @@ def seed_data():
         db.add_all([task1, task2])
         db.commit()
 
-        print("Datos insertados con éxito")
+        print("Seed ejecutado correctamente")
 
     finally:
         db.close()

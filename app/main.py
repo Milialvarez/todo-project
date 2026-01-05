@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import auth, reminders, tasks, test, users
+from app.api.v1.endpoints import admin, auth, reminders, tasks, test, users
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.scheduler import start_scheduler      
@@ -26,3 +26,4 @@ app.include_router(users.router)
 app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
 app.include_router(reminders.router, prefix="/reminders", tags=["Reminders"])
 app.include_router(test.router)
+app.include_router(admin.router)

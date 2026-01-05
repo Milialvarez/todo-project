@@ -6,6 +6,10 @@ from app.db.base_class import Base
 
 # use sqlalchemy as orm to create my tables automatically
 
+class UserRole(str, enum.Enum):
+    admin = "admin"
+    user = "user"
+
 class User(Base):
     __tablename__ = "users"
 
@@ -14,6 +18,12 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
+    role = Column(
+    Enum(UserRole, name="user_role"),
+    default=UserRole.user,
+    nullable=False
+)
+
 
     tasks = relationship(
     "Task",
@@ -25,7 +35,6 @@ class User(Base):
     back_populates="user",
     cascade="all, delete-orphan"
 )
-
 
 
 class StatusEnum(str, enum.Enum):
