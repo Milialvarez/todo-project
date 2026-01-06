@@ -23,3 +23,20 @@ def decode_access_token(token: str):
         return payload
     except JWTError:
         return None
+
+def create_refresh_token(subject: str, expires_delta: timedelta) -> str:
+    now = datetime.utcnow()
+    expire = now + expires_delta
+
+    to_encode = {
+        "sub": str(subject),
+        "exp": expire,
+        "iat": now,
+        "type": "refresh"
+    }
+
+    return jwt.encode(
+        to_encode,
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM
+    )

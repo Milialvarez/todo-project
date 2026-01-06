@@ -5,7 +5,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str = "change-me-to-a-random-secret"  
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 720 # medio día
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     EMAIL_FROM: Optional[str] = None
     EMAIL_PASSWORD: Optional[str] = None
     EMAIL_HOST: str = "smtp.gmail.com"
