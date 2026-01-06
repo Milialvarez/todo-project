@@ -9,7 +9,7 @@ from app.db.models import models
 from app.core.security import verify_password
 from app.core.jwt import create_access_token, create_refresh_token, decode_access_token
 from app.core.config import settings
-from app.schemas.token import Token
+from app.schemas.token import RefreshTokenRequest, Token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -73,9 +73,11 @@ def logout(
 
 @router.post("/refresh", response_model=Token)
 def refresh_access_token(
-    refresh_token: str,
-    db: Session = Depends(get_db)
+    data: RefreshTokenRequest,
+    db: Session = Depends(get_db),
 ):
+    refresh_token = data.refresh_token
+
     payload = decode_access_token(refresh_token)
 
     if not payload or payload.get("type") != "refresh":
@@ -90,13 +92,32 @@ def refresh_access_token(
         raise HTTPException(status_code=401, detail="Refresh token revoked")
 
     user_id = payload.get("sub")
+    
+    stored_token.revoked = True
+
+    new_refresh_token = create_refresh_token(
+        subject=user_id,
+        expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
+
+    db.add(
+        models.RefreshToken(
+            token=new_refresh_token,
+            user_id=int(user_id),
+            expires_at=datetime.utcnow()
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+        )
+    )
 
     new_access_token = create_access_token(
         subject=user_id,
-        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
+
+    db.commit()
 
     return {
         "access_token": new_access_token,
-        "refresh_token": refresh_token
+        "refresh_token": new_refresh_token,
+        "token_type": "bearer",
     }
