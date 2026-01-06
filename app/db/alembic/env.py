@@ -1,23 +1,18 @@
-from logging.config import fileConfig
+import sys
+from pathlib import Path
 
-from sqlalchemy import create_engine
-from sqlalchemy import pool
-from app.core.config import settings
-from db.base_class import Base
+BASE_DIR = Path(__file__).resolve().parents[3]
+sys.path.append(str(BASE_DIR))
+
+from sqlalchemy import create_engine, pool
 from alembic import context
+
+from app.core.config import settings
+from app.db.base_class import Base
 
 config = context.config
 
-if config.config_file_name:
-    fileConfig(config.config_file_name)
-
 target_metadata = Base.metadata
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
-
 
 def run_migrations_offline() -> None:
     context.configure(

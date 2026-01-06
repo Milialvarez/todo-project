@@ -8,6 +8,8 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - ./app:/app/app 
     command: >
       sh -c "
       python -m app.db.init_db &&
