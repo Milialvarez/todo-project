@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import uuid
 from jose import jwt, JWTError
 from app.core.config import settings
 from typing import Optional
@@ -29,14 +30,15 @@ def create_refresh_token(subject: str, expires_delta: timedelta) -> str:
     expire = now + expires_delta
 
     to_encode = {
-        "sub": str(subject),
+        "sub": subject,
         "exp": expire,
         "iat": now,
-        "type": "refresh"
+        "jti": str(uuid.uuid4()), 
+        "type": "refresh",
     }
 
     return jwt.encode(
         to_encode,
         settings.SECRET_KEY,
-        algorithm=settings.ALGORITHM
+        algorithm=settings.ALGORITHM,
     )
