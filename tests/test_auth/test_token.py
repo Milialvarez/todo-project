@@ -115,6 +115,29 @@ def test_non_admin_cannot_get_users(authorized_client):
     response = authorized_client.get("/admin/users")
     assert response.status_code == 403
 
+def test_change_roles(admin_client, client, db):
+    register_response = client.post(
+        "/users/register",
+        json={
+            "username": "user with normal role",
+            "email": "usertest@gmail.com",
+            "password": "123456",
+        },
+    )
+
+    assert register_response.status_code == 201
+    user_data = register_response.json()
+    user_id = user_data["id"]
+
+    response = admin_client.patch(
+        f"/admin/users/{user_id}/toggle-role"
+    )
+
+    assert response.status_code == 200
+
+    user_updated = response.json()
+    assert user_updated["role"] == "admin"
+
 
 
     
