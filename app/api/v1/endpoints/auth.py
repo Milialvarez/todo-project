@@ -28,6 +28,13 @@ def login_for_access_token(
             detail="Incorrect email or password",
         )
 
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive user",
+        )
+
+
     access_token = create_access_token(
         subject=str(user.id),
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
@@ -92,6 +99,14 @@ def refresh_access_token(
         raise HTTPException(status_code=401, detail="Refresh token revoked")
 
     user_id = payload.get("sub")
+    user = db.query(models.User).filter(models.User.id == int(user_id)).first()
+
+    if not user or not user.is_active:
+        raise HTTPException(
+            status_code=403,
+            detail="Inactive user",
+        )
+
     
     stored_token.revoked = True
 
