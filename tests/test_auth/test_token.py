@@ -80,3 +80,41 @@ def test_refresh_fails_if_user_deactivated_by_admin(client, admin_client, db):
     )
 
     assert refresh_response.status_code == 403
+
+def test_get_all_users(client, admin_client, db):
+    register_response = client.post(
+        "/users/register",
+        json={
+            "username": "normal user",
+            "email": "testemail@test.com",
+            "password": "123456",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    response = admin_client.get("/admin/users")
+    assert response.status_code == 200
+
+    users = response.json()
+    assert isinstance(users, list)
+    assert len(users) >= 1
+
+    usernames = [user["username"] for user in users]
+    assert "mili" in usernames
+
+def test_get_only_active_users(admin_client):
+    response = admin_client.get("/admin/users?is_active=true")
+
+    assert response.status_code == 200
+    users = response.json()
+
+    assert all(user["is_active"] is True for user in users)
+
+def test_non_admin_cannot_get_users(authorized_client):
+    response = authorized_client.get("/admin/users")
+    assert response.status_code == 403
+
+
+
+    
