@@ -1,12 +1,26 @@
 from fastapi import FastAPI
 from app.api.v1.endpoints import admin, auth, reminders, tasks, test, users
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.core.handlers import (
+    app_exception_handler,
+    not_found_handler,
+    permission_denied_handler,
+    invalid_token_handler,
+)
+from app.core.exceptions import (
+    AppException,
+    TaskNotFoundError,
+    ReminderNotFoundError,
+    UserNotFoundError,
+    PermissionDeniedError,
+    InvalidTokenError,
+)
 from app.core.scheduler import start_scheduler      
-
 
 app = FastAPI()
 
+# CORS middleware
+# Allows the Next.js frontend to communicate with the API.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -17,10 +31,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Generic business exception handler
+app.add_exception_handler(AppException, app_exception_handler)
+
+# Not found domain exceptions
+app.add_exception_handler(TaskNotFoundError, not_found_handler)
+app.add_exception_handler(ReminderNotFoundError, not_found_handler)
+app.add_exception_handler(UserNotFoundError, not_found_handler)
+
+# Authentication / authorization exceptions
+app.add_exception_handler(PermissionDeniedError, permission_denied_handler)
+app.add_exception_handler(InvalidTokenError, invalid_token_handler)
+
+
+# Startup event
+# Used to initialize the scheduler that sends reminder emails.
 @app.on_event("startup")
 def startup_event():
     start_scheduler()
 
+# API routers
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
