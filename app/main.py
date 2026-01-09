@@ -16,7 +16,9 @@ from app.core.exceptions import (
     InvalidTokenError,
 )
 from app.core.scheduler import start_scheduler
-from app.middlewares.logging import logging_middleware      
+from app.middlewares.auth_context import auth_context_middleware
+from app.middlewares.error_logging import error_logging_middleware
+from app.middlewares.logging import logging_middleware   
 
 app = FastAPI()
 
@@ -44,10 +46,18 @@ app.add_exception_handler(UserNotFoundError, not_found_handler)
 app.add_exception_handler(PermissionDeniedError, permission_denied_handler)
 app.add_exception_handler(InvalidTokenError, invalid_token_handler)
 
+# Logging, auth & error middlewares
+@app.middleware("http")
+async def auth_context(request: Request, call_next):
+    return await auth_context_middleware(request, call_next)
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     return await logging_middleware(request, call_next)
 
+@app.middleware("http")
+async def log_errors(request: Request, call_next):
+    return await error_logging_middleware(request, call_next)
 
 # Startup event
 # Used to initialize the scheduler that sends reminder emails.

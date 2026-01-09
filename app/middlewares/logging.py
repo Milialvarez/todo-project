@@ -2,7 +2,6 @@ import time
 import logging
 from fastapi import Request
 
-# Basic logger config
 logger = logging.getLogger("app")
 logging.basicConfig(level=logging.INFO)
 
@@ -17,17 +16,21 @@ async def logging_middleware(request: Request, call_next):
 
     start_time = time.time()
 
-    # Let the request continue through the app
     response = await call_next(request)
 
     process_time = time.time() - start_time
+    process_time_ms = process_time * 1000
 
+    # Add response time header
+    response.headers["X-Response-Time"] = f"{process_time_ms:.2f}ms"
+
+    # Log request info
     logger.info(
         "%s %s - %s (%.2f ms)",
         request.method,
         request.url.path,
         response.status_code,
-        process_time * 1000,
+        process_time_ms,
     )
 
     return response
