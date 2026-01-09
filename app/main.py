@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from app.api.v1.endpoints import admin, auth, reminders, tasks, test, users
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.handlers import (
@@ -15,7 +15,8 @@ from app.core.exceptions import (
     PermissionDeniedError,
     InvalidTokenError,
 )
-from app.core.scheduler import start_scheduler      
+from app.core.scheduler import start_scheduler
+from app.middlewares.logging import logging_middleware      
 
 app = FastAPI()
 
@@ -42,6 +43,10 @@ app.add_exception_handler(UserNotFoundError, not_found_handler)
 # Authentication / authorization exceptions
 app.add_exception_handler(PermissionDeniedError, permission_denied_handler)
 app.add_exception_handler(InvalidTokenError, invalid_token_handler)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    return await logging_middleware(request, call_next)
 
 
 # Startup event
