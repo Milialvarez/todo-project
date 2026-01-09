@@ -34,17 +34,17 @@ class UserNotFoundError(AppException):
         self.user_id = user_id
         super().__init__(f"User with id {user_id} not found")
 
-# Raised when a user exists but is inactive
-class UserInactiveError(AppException):
-    def __init__(self):
-        super().__init__("User is inactive")
-
 # AUTH / PERMISSIONS
 
 # Raised when a user tries to perform an action without the required role or permissions
 class PermissionDeniedError(AppException):
     def __init__(self):
         super().__init__("You do not have permission to perform this action")
+
+# Raised when a user exists but is inactive
+class UserInactiveError(PermissionDeniedError):
+    def __init__(self):
+        super().__init__()
 
 # Raised when an access or refresh token is invalid or expired
 class InvalidTokenError(AppException):
