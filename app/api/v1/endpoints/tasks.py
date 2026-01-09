@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import case
 from sqlalchemy.orm import Session
+from app.core.exceptions import PermissionDeniedError, TaskNotFoundError
 from app.db.session import get_db
 from app.db.models import models
 from app.schemas.task import TaskCreate, TaskRead, TaskUpdate
@@ -30,10 +31,10 @@ def update_task(task: TaskUpdate, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
     task_from_db = db.query(models.Task).filter(models.Task.id == task.task_id).first()
     if not task_from_db:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise TaskNotFoundError(task.task_id)
 
     if task_from_db.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to update this task")
+        raise PermissionDeniedError()
 
     if task.title is None and task.description is None and task.status is None:
         raise HTTPException(status_code=400, detail="At least one field must be provided")
@@ -55,10 +56,10 @@ def delete_task(task_id: int, db: Session = Depends(get_db),
                 current_user: models.User = Depends(get_current_user)):
     task_from_db = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task_from_db:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise TaskNotFoundError(task_id)
 
     if task_from_db.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to delete this task")
+        raise PermissionDeniedError()
 
     db.delete(task_from_db)
     db.commit()

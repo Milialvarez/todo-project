@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from app.core.deps import get_current_token
+from app.core.exceptions import InvalidTokenError, UserInactiveError
 from app.db.session import get_db
 from app.db.models import models
 from app.core.security import verify_password
@@ -88,7 +89,8 @@ def refresh_access_token(
     payload = decode_access_token(refresh_token)
 
     if not payload or payload.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
+        raise InvalidTokenError()
+
 
     stored_token = db.query(models.RefreshToken).filter(
         models.RefreshToken.token == refresh_token,
@@ -96,17 +98,14 @@ def refresh_access_token(
     ).first()
 
     if not stored_token:
-        raise HTTPException(status_code=401, detail="Refresh token revoked")
+        raise InvalidTokenError()
+
 
     user_id = payload.get("sub")
     user = db.query(models.User).filter(models.User.id == int(user_id)).first()
 
     if not user or not user.is_active:
-        raise HTTPException(
-            status_code=403,
-            detail="Inactive user",
-        )
-
+        raise UserInactiveError()
     
     stored_token.revoked = True
 

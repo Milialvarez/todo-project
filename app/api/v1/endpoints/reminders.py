@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from app.core.exceptions import PermissionDeniedError, ReminderNotFoundError
 from app.db.session import get_db
 from app.db.models import models
 from app.core.deps import get_current_user
@@ -49,10 +50,10 @@ def update_reminder(reminder: ReminderUpdate, db: Session = Depends(get_db),
     """
     reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == reminder.reminder_id).first()
     if not reminder_from_db:
-        raise HTTPException(status_code=404, detail="reminder not found")
+        raise ReminderNotFoundError(reminder.reminder_id)
 
     if reminder_from_db.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to update this reminder")
+        raise PermissionDeniedError()
 
     if reminder.description is None and reminder.date is None:
         raise HTTPException(status_code=400, detail="At least one field must be provided")
@@ -90,14 +91,15 @@ def delete_reminder(rem_id: int, db: Session = Depends(get_db),
     """
     reminder_from_db = db.query(models.Reminder).filter(models.Reminder.id == rem_id).first()
     if not reminder_from_db:
-        raise HTTPException(status_code=404, detail="Reminder not found")
+        raise ReminderNotFoundError(rem_id)
 
     if reminder_from_db.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to delete this reminder")
+        raise PermissionDeniedError()
 
     db.delete(reminder_from_db)
     db.commit()
     return None
+
 
 # already working well
 @router.get("/me", response_model=List[ReminderRead])

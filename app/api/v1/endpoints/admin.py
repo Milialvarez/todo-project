@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.deps import require_role
+from app.core.exceptions import UserNotFoundError
 from app.db.models import models
 from app.db.models.models import UserRole
 from app.db.session import get_db
@@ -38,7 +39,7 @@ def toggle_user_active(
     user = db.query(models.User).filter(models.User.id == user_id).first()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+      raise UserNotFoundError(user_id)
 
     user.is_active = not user.is_active
     db.commit()
@@ -58,7 +59,7 @@ def toggle_user_role(
     user = db.query(models.User).filter(models.User.id == user_id).first()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise UserNotFoundError(user_id)
 
     if user.role == UserRole.admin:
         user.role = UserRole.user
