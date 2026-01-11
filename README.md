@@ -10,14 +10,17 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Registro de usuarios
  - Login con JWT (access token)
  - Logout real mediante revocación de tokens
+ - Refresh token para mantener sesiones activas
  - CRUD completo de tareas y recordatorios
  - Tareas y recordatorios asociadas a un usuario autenticado
  - Filtrado de tareas por estado
+ - Diferenciación de usuarios por roles (admin vs user) con permisos especiales
  - Protección de rutas con dependencias (Depends)
  - Validación de datos con Pydantic
  - ORM con SQLAlchemy
  - Unit Testing de auth y módulo de tasks
  - Envío automático a las 9am de cada día a usuarios que tengan recordatorios para el día siguiente
+ - Uso de middlewares de logging, custom exceptions y exception handlers
 
 ---
 
