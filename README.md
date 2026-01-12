@@ -1,6 +1,6 @@
 # Task Manager API – Backend
 
-## Backend de una aplicación de gestión de tareas desarrollado con FastAPI, enfocado en autenticación con JWT y operaciones CRUD protegidas por usuario.
+## Backend de una aplicación de gestión de tareas y recordatorios desarrollado con FastAPI, enfocado en autenticación con JWT y operaciones CRUD protegidas por usuario.
 
 El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arquitectura backend moderna, incorporando buenas prácticas como testing automatizado, contenedorización con Docker y validación continua mediante CI.
 
@@ -18,7 +18,7 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Protección de rutas con dependencias (Depends)
  - Validación de datos con Pydantic
  - ORM con SQLAlchemy
- - Unit Testing de auth y módulo de tasks
+ - Unit & Integration Testing de auth y módulo de tasks
  - Envío automático a las 9am de cada día a usuarios que tengan recordatorios para el día siguiente
  - Uso de middlewares de logging, custom exceptions y exception handlers
 
@@ -37,6 +37,7 @@ El objetivo del proyecto fue profundizar conocimientos en Python, FastAPI y arqu
  - Docker & Docker Compose
  - GitHub Actions (CI)
  - SMTP
+ - Alembic
 
 ---
 
